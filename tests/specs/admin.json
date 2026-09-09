@@ -1,0 +1,20 @@
+[
+  {
+    "name": "/admin",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Open admin menu (restricted to ADMIN_CHAT_ID). Create/Edit albums, upload images, reorder/delete."
+            }
+          }
+        ],
+        "send": {
+          "text": "/admin"
+        }
+      }
+    ]
+  }
+]
