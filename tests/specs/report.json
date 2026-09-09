@@ -1,0 +1,1 @@
+[{"name":"report starts with a reason picker","steps":[{"send":{"callback":"report:start:image1"},"expect":[{"method":"sendMessage","payload":{"text":"What’s wrong with this photo?"}}]}]}]

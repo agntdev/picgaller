@@ -154,6 +154,34 @@ export class ChatDO {
       return new Response(null, { status: 204 });
     }
 
+    // Gallery domain records use a single named ChatDO (gallery:global). This
+    // gives the application durable, serialized record updates without a
+    // keyspace scan or a Node-only database client.
+    if (url.pathname.startsWith("/gallery/record/")) {
+      const key = decodeURIComponent(url.pathname.slice("/gallery/record/".length));
+      if (request.method === "GET") {
+        const value = await this.state.storage.get<string>(key);
+        return value === undefined ? new Response(null, { status: 404 }) : Response.json({ value });
+      }
+      if (request.method === "PUT") {
+        const body = await request.json() as { value: string };
+        await this.state.storage.put(key, body.value);
+        return new Response(null, { status: 204 });
+      }
+      if (request.method === "DELETE") {
+        await this.state.storage.delete(key);
+        return new Response(null, { status: 204 });
+      }
+    }
+    if (url.pathname === "/gallery/batch" && request.method === "POST") {
+      const operations = await request.json() as Array<{ key: string; value?: string; delete?: boolean }>;
+      for (const op of operations) {
+        if (op.delete) await this.state.storage.delete(op.key);
+        else await this.state.storage.put(op.key, op.value ?? "");
+      }
+      return new Response(null, { status: 204 });
+    }
+
     return new Response("not found", { status: 404 });
   }
 

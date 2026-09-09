@@ -6,7 +6,8 @@ import type { StorageAdapter } from "grammy";
 // bot grows. Durable domain data must NOT live here — use the toolkit's
 // persistent storage (see AGENTS.md).
 export interface Session {
-  // example: step?: "awaiting_amount";
+  // Feature-local transient conversation fields are intentionally cast in their
+  // handler modules so this shared assembly file stays conflict-free.
 }
 
 export type Ctx = BotContext<Session>;
